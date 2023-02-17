@@ -13,7 +13,7 @@ dataSources:
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - LendgineCreated
+        - Factory
       abis:
         - name: Factory
           file: ./abis/Factory.json

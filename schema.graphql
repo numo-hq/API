@@ -1,12 +1,6 @@
-type LendgineCreated @entity(immutable: true) {
-  id: Bytes!
-  token0: Bytes! # address
-  token1: Bytes! # address
-  token0Exp: BigInt! # uint256
-  token1Exp: BigInt! # uint256
-  upperBound: BigInt! # uint256
-  lendgine: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+type Factory @entity {
+  "factory address"
+  id: ID!
+  "amount of lendgines created"
+  lendgineCount: BigInt!
 }

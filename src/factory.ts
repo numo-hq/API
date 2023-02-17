@@ -1,20 +1,15 @@
 import { LendgineCreated as LendgineCreatedEvent } from "../generated/Factory/Factory"
-import { LendgineCreated } from "../generated/schema"
+import { Factory } from "../generated/schema";
+import { FACTORY_ADDRESS, ONE_BI, ZERO_BI } from "./utils";
 
-export function handleLendgineCreated(event: LendgineCreatedEvent): void {
-  let entity = new LendgineCreated(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.token0 = event.params.token0
-  entity.token1 = event.params.token1
-  entity.token0Exp = event.params.token0Exp
-  entity.token1Exp = event.params.token1Exp
-  entity.upperBound = event.params.upperBound
-  entity.lendgine = event.params.lendgine
+export function handleLendgineCreated(_event: LendgineCreatedEvent): void {
+  let factory = Factory.load(FACTORY_ADDRESS);
+  if (factory === null) {
+    factory = new Factory(FACTORY_ADDRESS)
+    factory.lendgineCount = ZERO_BI
+  }
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
+  factory.lendgineCount = factory.lendgineCount.plus(ONE_BI)
 
-  entity.save()
+  factory.save()
 }
