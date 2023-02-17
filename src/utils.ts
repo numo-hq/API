@@ -1,6 +1,6 @@
 /* eslint-disable prefer-const */
 import { BigInt, BigDecimal, Address } from '@graphprotocol/graph-ts'
-import { Factory as FactoryContract } from '../generated/Factory/Factory'
+import { Factory as FactoryContract } from './types/Factory/Factory'
 
 export const ADDRESS_ZERO = '0x0000000000000000000000000000000000000000'
 export const FACTORY_ADDRESS = '0x09c1133669cb9b49704dc27ae0b523be74467f2a'
