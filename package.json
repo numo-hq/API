@@ -4,6 +4,7 @@
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
+    "clean": "rm -rf build/ generated/",
     "deploy": "graph deploy --node https://api.thegraph.com/deploy/ kyscott/numoen",
     "create-local": "graph create --node http://localhost:8020/ kyscott/numoen",
     "remove-local": "graph remove --node http://localhost:8020/ kyscott/numoen",
