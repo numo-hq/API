@@ -5,6 +5,7 @@ import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts'
 export const AddressOne = Address.fromString('0x0000000000000000000000000000000000000001')
 export const AddressTwo = Address.fromString('0x0000000000000000000000000000000000000002')
 export const AddressThree = Address.fromString('0x0000000000000000000000000000000000000003')
+export const AddressFour = Address.fromString('0x0000000000000000000000000000000000000004')
 
 export function createLendgineCreatedEvent(
   token0: Address,

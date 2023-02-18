@@ -4,3 +4,15 @@ type Factory @entity {
   "amount of lendgines created"
   lendgineCount: BigInt!
 }
+
+type Lendgine @entity {
+  "Address"
+  id: ID!
+
+  "immutables"
+  token0: Bytes!
+  token1: Bytes!
+  token0Exp: Int!
+  token1Exp: Int!
+  upperBound: BigInt!
+}

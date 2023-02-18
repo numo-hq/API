@@ -1,19 +1,12 @@
-import {
-  describe,
-  test,
-  afterAll,
-  clearStore,
-  assert,
-  createMockedFunction,
-  afterEach,
-} from 'matchstick-as/assembly/index'
+import { describe, test, clearStore, assert, createMockedFunction, afterEach } from 'matchstick-as/assembly/index'
 import { FACTORY_ADDRESS } from '../src/utils'
 import { handleLendgineCreated } from '../src/factory'
-import { AddressOne, AddressThree, AddressTwo, createLendgineCreatedEvent } from './utils'
+import { AddressFour, AddressOne, AddressThree, AddressTwo, createLendgineCreatedEvent } from './utils'
 import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts'
 import { Factory } from '../src/types/Factory/Factory'
 
 const FactoryEntityType = 'Factory'
+const LendgineEntityType = 'Lendgine'
 
 export { handleLendgineCreated }
 
@@ -36,7 +29,14 @@ describe('handleLendgineCreated()', () => {
 
     assert.fieldEquals(FactoryEntityType, FACTORY_ADDRESS, 'id', FACTORY_ADDRESS)
     assert.fieldEquals(FactoryEntityType, FACTORY_ADDRESS, 'lendgineCount', '1')
+    assert.fieldEquals(LendgineEntityType, AddressThree.toHexString(), 'token0', AddressOne.toHexString())
+    assert.fieldEquals(LendgineEntityType, AddressThree.toHexString(), 'token1', AddressTwo.toHexString())
+    assert.fieldEquals(LendgineEntityType, AddressThree.toHexString(), 'token0Exp', '18')
+    assert.fieldEquals(LendgineEntityType, AddressThree.toHexString(), 'token1Exp', '18')
+    assert.fieldEquals(LendgineEntityType, AddressThree.toHexString(), 'upperBound', '1000000000000000000')
+
     assert.entityCount(FactoryEntityType, 1)
+    assert.entityCount(LendgineEntityType, 1)
   })
 
   test('Save Factory from contract call', () => {
@@ -61,20 +61,15 @@ describe('handleLendgineCreated()', () => {
   })
 
   test('Create two lendgines', () => {
-    const lendgineCreatedEvent = createLendgineCreatedEvent(
-      AddressOne,
-      AddressTwo,
-      18,
-      18,
-      BigInt.fromString('1000000000000000000'),
-      AddressThree
+    handleLendgineCreated(
+      createLendgineCreatedEvent(AddressOne, AddressTwo, 18, 18, BigInt.fromString('1000000000000000000'), AddressThree)
+    )
+    handleLendgineCreated(
+      createLendgineCreatedEvent(AddressOne, AddressTwo, 18, 18, BigInt.fromString('1000000000000000000'), AddressFour)
     )
 
-    handleLendgineCreated(lendgineCreatedEvent)
-    handleLendgineCreated(lendgineCreatedEvent)
-
-    assert.fieldEquals(FactoryEntityType, FACTORY_ADDRESS, 'id', FACTORY_ADDRESS)
     assert.fieldEquals(FactoryEntityType, FACTORY_ADDRESS, 'lendgineCount', '2')
     assert.entityCount(FactoryEntityType, 1)
+    assert.entityCount(LendgineEntityType, 2)
   })
 })
