@@ -2,6 +2,10 @@ import { newMockEvent } from 'matchstick-as'
 import { LendgineCreated } from '../src/types/Factory/Factory'
 import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts'
 
+export const AddressOne = Address.fromString('0x0000000000000000000000000000000000000001')
+export const AddressTwo = Address.fromString('0x0000000000000000000000000000000000000002')
+export const AddressThree = Address.fromString('0x0000000000000000000000000000000000000003')
+
 export function createLendgineCreatedEvent(
   token0: Address,
   token1: Address,
