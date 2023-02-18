@@ -3,3 +3,10 @@ build
 src/types
 
 .eslintcache
+
+# Matchstick binaries
+tests/.*
+matchstick
+
+# Test coverage tools
+tests/.tools/
