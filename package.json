@@ -5,7 +5,7 @@
     "codegen": "graph codegen --output-dir src/types/",
     "build": "graph build",
     "clean": "rm -rf build/ generated/",
-    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ kyscott/numoen",
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ kyscott18/numoen-arbitrum",
     "create-local": "graph create --node http://localhost:8020/ kyscott/numoen",
     "remove-local": "graph remove --node http://localhost:8020/ kyscott/numoen",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 kyscott/numoen",
