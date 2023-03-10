@@ -1,13 +1,18 @@
 import { describe, test, clearStore, assert, createMockedFunction, afterEach } from 'matchstick-as/assembly/index'
 import { FACTORY_ADDRESS } from '../src/utils'
 import { handleLendgineCreated } from '../src/factory'
-import { AddressFour, AddressOne, AddressThree, AddressTwo, createLendgineCreatedEvent } from './utils'
+import {
+  AddressFour,
+  AddressOne,
+  AddressThree,
+  AddressTwo,
+  createLendgineCreatedEvent,
+  FactoryEntityType,
+  LendgineEntityType,
+  TokenEntityType,
+} from './utils'
 import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts'
 import { Factory } from '../src/types/Factory/Factory'
-
-const FactoryEntityType = 'Factory'
-const LendgineEntityType = 'Lendgine'
-const TokenEntityType = 'Token'
 
 export { handleLendgineCreated }
 
@@ -93,5 +98,6 @@ describe('handleLendgineCreated()', () => {
     assert.fieldEquals(FactoryEntityType, FACTORY_ADDRESS, 'lendgineCount', '2')
     assert.entityCount(FactoryEntityType, 1)
     assert.entityCount(LendgineEntityType, 2)
+    assert.entityCount(TokenEntityType, 2)
   })
 })

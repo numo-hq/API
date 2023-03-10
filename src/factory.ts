@@ -1,8 +1,9 @@
 import { LendgineCreated as LendgineCreatedEvent } from './types/Factory/Factory'
 import { Factory, Lendgine, Token } from './types/schema'
-import { FACTORY_ADDRESS, loadTransaction, ONE_BI, ZERO_BI } from './utils'
+import { FACTORY_ADDRESS, ONE_BI, ZERO_BI } from './utils'
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { Lendgine as LendgineTemplate } from './types/templates'
+
 export function handleLendgineCreated(event: LendgineCreatedEvent): void {
   let factory = Factory.load(FACTORY_ADDRESS)
   if (factory === null) {
@@ -11,8 +12,7 @@ export function handleLendgineCreated(event: LendgineCreatedEvent): void {
     factory.txCount = ZERO_BI
   }
 
-  // eslint-disable-next-line prefer-const
-  let lendgine = new Lendgine(event.params.lendgine.toHexString())
+  const lendgine = new Lendgine(event.params.lendgine.toHexString())
   let token0 = Token.load(event.params.token0.toHexString())
   let token1 = Token.load(event.params.token1.toHexString())
 
@@ -43,10 +43,6 @@ export function handleLendgineCreated(event: LendgineCreatedEvent): void {
   lendgine.reserve0 = ZERO_BI
   lendgine.reserve1 = ZERO_BI
 
-  // eslint-disable-next-line prefer-const
-  let transaction = loadTransaction(event)
-  lendgine.creationTransaction = transaction.id
-
   lendgine.txCount = ZERO_BI
 
   factory.lendgineCount = factory.lendgineCount.plus(ONE_BI)
@@ -59,7 +55,8 @@ export function handleLendgineCreated(event: LendgineCreatedEvent): void {
 
   token0.save()
   token1.save()
-  transaction.save()
   lendgine.save()
+  // create the tracked contract based on the template
+  LendgineTemplate.create(event.params.lendgine)
   factory.save()
 }
