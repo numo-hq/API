@@ -1,6 +1,7 @@
 import { newMockEvent } from 'matchstick-as'
 import { LendgineCreated } from '../src/types/Factory/Factory'
 import { Burn, Mint, Deposit, Withdraw } from '../src/types/templates/Lendgine/Lendgine'
+import { Burn as PairBurn, Mint as PairMint } from '../src/types/templates/Lendgine/Pair'
 import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts'
 
 export const LendgineEntityType = 'Lendgine'
@@ -10,6 +11,8 @@ export const MintEntityType = 'Mint'
 export const BurnEntityType = 'Burn'
 export const DepositEntityType = 'Deposit'
 export const WithdrawEntityType = 'Withdraw'
+export const PairMintEntityType = 'PairMint'
+export const PairBurnEntityType = 'PairBurn'
 
 export const AddressOne = Address.fromString('0x0000000000000000000000000000000000000001')
 export const AddressTwo = Address.fromString('0x0000000000000000000000000000000000000002')
@@ -147,4 +150,51 @@ export function createWithdrawEvent(
   withdrawEvent.parameters.push(toParams)
 
   return withdrawEvent
+}
+
+export function createPairMintEvent(
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  amount0In: BigInt,
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  amount1In: BigInt,
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  liquidity: BigInt
+): PairMint {
+  const mintEvent = changetype<PairMint>(newMockEvent())
+  mintEvent.parameters = []
+
+  const amount0Param = new ethereum.EventParam('amount0In', ethereum.Value.fromUnsignedBigInt(amount0In))
+  const amount1Param = new ethereum.EventParam('amount1In', ethereum.Value.fromUnsignedBigInt(amount1In))
+  const liquidityParam = new ethereum.EventParam('liquidity', ethereum.Value.fromUnsignedBigInt(liquidity))
+
+  mintEvent.parameters.push(amount0Param)
+  mintEvent.parameters.push(amount1Param)
+  mintEvent.parameters.push(liquidityParam)
+
+  return mintEvent
+}
+
+export function createPairBurnEvent(
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  amount0Out: BigInt,
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  amount1Out: BigInt,
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  liquidity: BigInt,
+  to: Address
+): PairBurn {
+  const burnEvent = changetype<PairBurn>(newMockEvent())
+  burnEvent.parameters = []
+
+  const amount0Param = new ethereum.EventParam('amount0Out', ethereum.Value.fromUnsignedBigInt(amount0Out))
+  const amount1Param = new ethereum.EventParam('amount1Out', ethereum.Value.fromUnsignedBigInt(amount1Out))
+  const liquidityParam = new ethereum.EventParam('liquidity', ethereum.Value.fromUnsignedBigInt(liquidity))
+  const toParam = new ethereum.EventParam('to', ethereum.Value.fromAddress(to))
+
+  burnEvent.parameters.push(amount0Param)
+  burnEvent.parameters.push(amount1Param)
+  burnEvent.parameters.push(liquidityParam)
+  burnEvent.parameters.push(toParam)
+
+  return burnEvent
 }

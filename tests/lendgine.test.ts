@@ -10,19 +10,23 @@ import {
   createDepositEvent,
   createLendgineCreatedEvent,
   createMintEvent,
+  createPairBurnEvent,
+  createPairMintEvent,
   createWithdrawEvent,
   DepositEntityType,
   FactoryEntityType,
   LendgineEntityType,
   MintEntityType,
+  PairBurnEntityType,
+  PairMintEntityType,
   TokenEntityType,
   WithdrawEntityType,
 } from './utils'
 import { BigInt, Bytes } from '@graphprotocol/graph-ts'
-import { handleBurn, handleDeposit, handleMint, handleWithdraw } from '../src/lendgine'
+import { handleBurn, handleDeposit, handleMint, handlePairBurn, handlePairMint, handleWithdraw } from '../src/lendgine'
 export { handleLendgineCreated }
 
-describe('handleMint()', () => {
+describe('Lendgines', () => {
   beforeEach(() => {
     const lendgineCreatedEvent = createLendgineCreatedEvent(
       AddressOne,
@@ -190,5 +194,79 @@ describe('handleMint()', () => {
     assert.entityCount(LendgineEntityType, 1)
     assert.entityCount(TokenEntityType, 2)
     assert.entityCount(WithdrawEntityType, 1)
+  })
+
+  test('Save Pair Mint from event', () => {
+    const mintEvent = createPairMintEvent(
+      BigInt.fromString('1000000000000000000'),
+      BigInt.fromString('2000000000000000000'),
+      BigInt.fromString('3000000000000000000')
+    )
+
+    mintEvent.address = AddressThree
+    mintEvent.transaction.hash = Bytes.empty()
+    mintEvent.logIndex = BigInt.fromString('1')
+
+    handlePairMint(mintEvent)
+
+    assert.fieldEquals(PairMintEntityType, '0x00000000#1', 'id', '0x00000000#1')
+    assert.fieldEquals(PairMintEntityType, '0x00000000#1', 'lendgine', AddressThree.toHexString())
+    assert.fieldEquals(PairMintEntityType, '0x00000000#1', 'amount0', '1000000000000000000')
+    assert.fieldEquals(PairMintEntityType, '0x00000000#1', 'amount1', '2000000000000000000')
+    assert.fieldEquals(PairMintEntityType, '0x00000000#1', 'liquidity', '3000000000000000000')
+
+    assert.fieldEquals(PairMintEntityType, '0x00000000#1', 'logIndex', '1')
+
+    assert.fieldEquals(FactoryEntityType, FACTORY_ADDRESS, 'id', FACTORY_ADDRESS)
+    assert.fieldEquals(FactoryEntityType, FACTORY_ADDRESS, 'lendgineCount', '1')
+    assert.fieldEquals(FactoryEntityType, FACTORY_ADDRESS, 'txCount', '2')
+
+    assert.fieldEquals(TokenEntityType, AddressOne.toHexString(), 'poolCount', '1')
+    assert.fieldEquals(TokenEntityType, AddressOne.toHexString(), 'txCount', '2')
+    assert.fieldEquals(TokenEntityType, AddressTwo.toHexString(), 'poolCount', '1')
+    assert.fieldEquals(TokenEntityType, AddressTwo.toHexString(), 'txCount', '2')
+
+    assert.entityCount(FactoryEntityType, 1)
+    assert.entityCount(LendgineEntityType, 1)
+    assert.entityCount(TokenEntityType, 2)
+    assert.entityCount(PairMintEntityType, 1)
+  })
+
+  test('Save Pair Burn from event', () => {
+    const burnEvent = createPairBurnEvent(
+      BigInt.fromString('1000000000000000000'),
+      BigInt.fromString('2000000000000000000'),
+      BigInt.fromString('3000000000000000000'),
+      AddressOne
+    )
+
+    burnEvent.address = AddressThree
+    burnEvent.transaction.hash = Bytes.empty()
+    burnEvent.logIndex = BigInt.fromString('1')
+
+    handlePairBurn(burnEvent)
+
+    assert.fieldEquals(PairBurnEntityType, '0x00000000#1', 'id', '0x00000000#1')
+    assert.fieldEquals(PairBurnEntityType, '0x00000000#1', 'lendgine', AddressThree.toHexString())
+    assert.fieldEquals(PairBurnEntityType, '0x00000000#1', 'amount0', '1000000000000000000')
+    assert.fieldEquals(PairBurnEntityType, '0x00000000#1', 'amount1', '2000000000000000000')
+    assert.fieldEquals(PairBurnEntityType, '0x00000000#1', 'liquidity', '3000000000000000000')
+    assert.fieldEquals(PairBurnEntityType, '0x00000000#1', 'recipient', AddressOne.toHexString())
+
+    assert.fieldEquals(PairBurnEntityType, '0x00000000#1', 'logIndex', '1')
+
+    assert.fieldEquals(FactoryEntityType, FACTORY_ADDRESS, 'id', FACTORY_ADDRESS)
+    assert.fieldEquals(FactoryEntityType, FACTORY_ADDRESS, 'lendgineCount', '1')
+    assert.fieldEquals(FactoryEntityType, FACTORY_ADDRESS, 'txCount', '2')
+
+    assert.fieldEquals(TokenEntityType, AddressOne.toHexString(), 'poolCount', '1')
+    assert.fieldEquals(TokenEntityType, AddressOne.toHexString(), 'txCount', '2')
+    assert.fieldEquals(TokenEntityType, AddressTwo.toHexString(), 'poolCount', '1')
+    assert.fieldEquals(TokenEntityType, AddressTwo.toHexString(), 'txCount', '2')
+
+    assert.entityCount(FactoryEntityType, 1)
+    assert.entityCount(LendgineEntityType, 1)
+    assert.entityCount(TokenEntityType, 2)
+    assert.entityCount(PairBurnEntityType, 1)
   })
 })
