@@ -221,7 +221,7 @@ type Collect @entity {
   # The lendgine the position is in
   lendgine: Lendgine!
 
-  sender: Bytes!
+  owner: Bytes!
   recipient: Bytes!
 
   # TODO: should these be something different

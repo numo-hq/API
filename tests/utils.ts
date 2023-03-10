@@ -1,7 +1,15 @@
 import { newMockEvent } from 'matchstick-as'
 import { LendgineCreated } from '../src/types/Factory/Factory'
-import { Burn, Mint, Deposit, Withdraw } from '../src/types/templates/Lendgine/Lendgine'
-import { Burn as PairBurn, Mint as PairMint } from '../src/types/templates/Lendgine/Pair'
+import {
+  Burn,
+  Mint,
+  Deposit,
+  Withdraw,
+  AccrueInterest,
+  AccruePositionInterest,
+  Collect,
+} from '../src/types/templates/Lendgine/Lendgine'
+import { Burn as PairBurn, Mint as PairMint, Swap } from '../src/types/templates/Lendgine/Pair'
 import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts'
 
 export const LendgineEntityType = 'Lendgine'
@@ -13,6 +21,10 @@ export const DepositEntityType = 'Deposit'
 export const WithdrawEntityType = 'Withdraw'
 export const PairMintEntityType = 'PairMint'
 export const PairBurnEntityType = 'PairBurn'
+export const SwapEntityType = 'Swap'
+export const AccrueInterestEntityType = 'AccrueInterest'
+export const AccruePositionInterestEntityType = 'AccruePositionInterest'
+export const CollectEntityType = 'Collect'
 
 export const AddressOne = Address.fromString('0x0000000000000000000000000000000000000001')
 export const AddressTwo = Address.fromString('0x0000000000000000000000000000000000000002')
@@ -197,4 +209,97 @@ export function createPairBurnEvent(
   burnEvent.parameters.push(toParam)
 
   return burnEvent
+}
+
+export function createSwapEvent(
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  amount0Out: BigInt,
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  amount1Out: BigInt,
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  amount0In: BigInt,
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  amount1In: BigInt,
+
+  to: Address
+): Swap {
+  const swapEvent = changetype<Swap>(newMockEvent())
+  swapEvent.parameters = []
+
+  const amount0OutParam = new ethereum.EventParam('amount0Out', ethereum.Value.fromUnsignedBigInt(amount0Out))
+  const amount1OutParam = new ethereum.EventParam('amount1Out', ethereum.Value.fromUnsignedBigInt(amount1Out))
+  const amount0InParam = new ethereum.EventParam('amount0In', ethereum.Value.fromUnsignedBigInt(amount0In))
+  const amount1InParam = new ethereum.EventParam('amount1In', ethereum.Value.fromUnsignedBigInt(amount1In))
+  const toParam = new ethereum.EventParam('to', ethereum.Value.fromAddress(to))
+
+  swapEvent.parameters.push(amount0OutParam)
+  swapEvent.parameters.push(amount1OutParam)
+  swapEvent.parameters.push(amount0InParam)
+  swapEvent.parameters.push(amount1InParam)
+  swapEvent.parameters.push(toParam)
+
+  return swapEvent
+}
+
+export function createAccrueInterestEvent(
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  timeElapsed: BigInt,
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  collateral: BigInt,
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  liquidity: BigInt
+): AccrueInterest {
+  const accrueInterestEvent = changetype<AccrueInterest>(newMockEvent())
+  accrueInterestEvent.parameters = []
+
+  const timeElapsedParam = new ethereum.EventParam('timeElapsed', ethereum.Value.fromUnsignedBigInt(timeElapsed))
+  const collateralParam = new ethereum.EventParam('collateral', ethereum.Value.fromUnsignedBigInt(collateral))
+  const liquidityParam = new ethereum.EventParam('liquidity', ethereum.Value.fromUnsignedBigInt(liquidity))
+
+  accrueInterestEvent.parameters.push(timeElapsedParam)
+  accrueInterestEvent.parameters.push(collateralParam)
+  accrueInterestEvent.parameters.push(liquidityParam)
+
+  return accrueInterestEvent
+}
+
+export function createAccruePositionInterestEvent(
+  owner: Address,
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  rewardPerPosition: BigInt
+): AccruePositionInterest {
+  const accruePositionInterestEvent = changetype<AccruePositionInterest>(newMockEvent())
+  accruePositionInterestEvent.parameters = []
+
+  const ownerParam = new ethereum.EventParam('owner', ethereum.Value.fromAddress(owner))
+  const rewardPerPositionParam = new ethereum.EventParam(
+    'rewardPerPosition',
+    ethereum.Value.fromUnsignedBigInt(rewardPerPosition)
+  )
+
+  accruePositionInterestEvent.parameters.push(ownerParam)
+  accruePositionInterestEvent.parameters.push(rewardPerPositionParam)
+
+  return accruePositionInterestEvent
+}
+
+export function createCollectEvent(
+  owner: Address,
+  to: Address,
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  amount: BigInt
+): Collect {
+  const collectEvent = changetype<Collect>(newMockEvent())
+  collectEvent.parameters = []
+
+  const ownerParam = new ethereum.EventParam('owner', ethereum.Value.fromAddress(owner))
+  const toParam = new ethereum.EventParam('to', ethereum.Value.fromAddress(to))
+
+  const amountParam = new ethereum.EventParam('amount', ethereum.Value.fromUnsignedBigInt(amount))
+
+  collectEvent.parameters.push(ownerParam)
+  collectEvent.parameters.push(toParam)
+  collectEvent.parameters.push(amountParam)
+
+  return collectEvent
 }

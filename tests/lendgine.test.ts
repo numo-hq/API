@@ -2,16 +2,23 @@ import { describe, test, clearStore, assert, afterEach, beforeEach } from 'match
 import { handleLendgineCreated } from '../src/factory'
 import { FACTORY_ADDRESS } from '../src/utils'
 import {
+  AccrueInterestEntityType,
+  AccruePositionInterestEntityType,
   AddressOne,
   AddressThree,
   AddressTwo,
   BurnEntityType,
+  CollectEntityType,
+  createAccrueInterestEvent,
+  createAccruePositionInterestEvent,
   createBurnEvent,
+  createCollectEvent,
   createDepositEvent,
   createLendgineCreatedEvent,
   createMintEvent,
   createPairBurnEvent,
   createPairMintEvent,
+  createSwapEvent,
   createWithdrawEvent,
   DepositEntityType,
   FactoryEntityType,
@@ -19,11 +26,23 @@ import {
   MintEntityType,
   PairBurnEntityType,
   PairMintEntityType,
+  SwapEntityType,
   TokenEntityType,
   WithdrawEntityType,
 } from './utils'
 import { BigInt, Bytes } from '@graphprotocol/graph-ts'
-import { handleBurn, handleDeposit, handleMint, handlePairBurn, handlePairMint, handleWithdraw } from '../src/lendgine'
+import {
+  handleAccrueInterest,
+  handleAccruePositionInterest,
+  handleBurn,
+  handleCollect,
+  handleDeposit,
+  handleMint,
+  handlePairBurn,
+  handlePairMint,
+  handleSwap,
+  handleWithdraw,
+} from '../src/lendgine'
 export { handleLendgineCreated }
 
 describe('Lendgines', () => {
@@ -268,5 +287,144 @@ describe('Lendgines', () => {
     assert.entityCount(LendgineEntityType, 1)
     assert.entityCount(TokenEntityType, 2)
     assert.entityCount(PairBurnEntityType, 1)
+  })
+
+  test('Save Swap from event', () => {
+    const swapEvent = createSwapEvent(
+      BigInt.fromString('1000000000000000000'),
+      BigInt.fromString('2000000000000000000'),
+      BigInt.fromString('3000000000000000000'),
+      BigInt.fromString('4000000000000000000'),
+      AddressOne
+    )
+
+    swapEvent.address = AddressThree
+    swapEvent.transaction.hash = Bytes.empty()
+    swapEvent.logIndex = BigInt.fromString('1')
+
+    handleSwap(swapEvent)
+
+    assert.fieldEquals(SwapEntityType, '0x00000000#1', 'id', '0x00000000#1')
+    assert.fieldEquals(SwapEntityType, '0x00000000#1', 'lendgine', AddressThree.toHexString())
+    assert.fieldEquals(SwapEntityType, '0x00000000#1', 'amount0Out', '1000000000000000000')
+    assert.fieldEquals(SwapEntityType, '0x00000000#1', 'amount1Out', '2000000000000000000')
+    assert.fieldEquals(SwapEntityType, '0x00000000#1', 'amount0In', '3000000000000000000')
+    assert.fieldEquals(SwapEntityType, '0x00000000#1', 'amount1In', '4000000000000000000')
+    assert.fieldEquals(SwapEntityType, '0x00000000#1', 'recipient', AddressOne.toHexString())
+
+    assert.fieldEquals(SwapEntityType, '0x00000000#1', 'logIndex', '1')
+
+    assert.fieldEquals(FactoryEntityType, FACTORY_ADDRESS, 'id', FACTORY_ADDRESS)
+    assert.fieldEquals(FactoryEntityType, FACTORY_ADDRESS, 'lendgineCount', '1')
+    assert.fieldEquals(FactoryEntityType, FACTORY_ADDRESS, 'txCount', '2')
+
+    assert.fieldEquals(TokenEntityType, AddressOne.toHexString(), 'poolCount', '1')
+    assert.fieldEquals(TokenEntityType, AddressOne.toHexString(), 'txCount', '2')
+    assert.fieldEquals(TokenEntityType, AddressTwo.toHexString(), 'poolCount', '1')
+    assert.fieldEquals(TokenEntityType, AddressTwo.toHexString(), 'txCount', '2')
+
+    assert.entityCount(FactoryEntityType, 1)
+    assert.entityCount(LendgineEntityType, 1)
+    assert.entityCount(TokenEntityType, 2)
+    assert.entityCount(SwapEntityType, 1)
+  })
+
+  test('Save Accrue Interest from event', () => {
+    const accrueInterestEvent = createAccrueInterestEvent(
+      BigInt.fromString('1000000000000000000'),
+      BigInt.fromString('2000000000000000000'),
+      BigInt.fromString('3000000000000000000')
+    )
+
+    accrueInterestEvent.address = AddressThree
+    accrueInterestEvent.transaction.hash = Bytes.empty()
+    accrueInterestEvent.logIndex = BigInt.fromString('1')
+
+    handleAccrueInterest(accrueInterestEvent)
+
+    assert.fieldEquals(AccrueInterestEntityType, '0x00000000#1', 'id', '0x00000000#1')
+    assert.fieldEquals(AccrueInterestEntityType, '0x00000000#1', 'lendgine', AddressThree.toHexString())
+    assert.fieldEquals(AccrueInterestEntityType, '0x00000000#1', 'timeElapsed', '1000000000000000000')
+    assert.fieldEquals(AccrueInterestEntityType, '0x00000000#1', 'collateral', '2000000000000000000')
+    assert.fieldEquals(AccrueInterestEntityType, '0x00000000#1', 'liquidity', '3000000000000000000')
+
+    assert.fieldEquals(AccrueInterestEntityType, '0x00000000#1', 'logIndex', '1')
+
+    assert.fieldEquals(FactoryEntityType, FACTORY_ADDRESS, 'id', FACTORY_ADDRESS)
+    assert.fieldEquals(FactoryEntityType, FACTORY_ADDRESS, 'lendgineCount', '1')
+    assert.fieldEquals(FactoryEntityType, FACTORY_ADDRESS, 'txCount', '2')
+
+    assert.fieldEquals(TokenEntityType, AddressOne.toHexString(), 'poolCount', '1')
+    assert.fieldEquals(TokenEntityType, AddressOne.toHexString(), 'txCount', '2')
+    assert.fieldEquals(TokenEntityType, AddressTwo.toHexString(), 'poolCount', '1')
+    assert.fieldEquals(TokenEntityType, AddressTwo.toHexString(), 'txCount', '2')
+
+    assert.entityCount(FactoryEntityType, 1)
+    assert.entityCount(LendgineEntityType, 1)
+    assert.entityCount(TokenEntityType, 2)
+    assert.entityCount(AccrueInterestEntityType, 1)
+  })
+
+  test('Save Accrue Position Interest from event', () => {
+    const accrueInterestEvent = createAccruePositionInterestEvent(AddressOne, BigInt.fromString('1000000000000000000'))
+
+    accrueInterestEvent.address = AddressThree
+    accrueInterestEvent.transaction.hash = Bytes.empty()
+    accrueInterestEvent.logIndex = BigInt.fromString('1')
+
+    handleAccruePositionInterest(accrueInterestEvent)
+
+    assert.fieldEquals(AccruePositionInterestEntityType, '0x00000000#1', 'id', '0x00000000#1')
+    assert.fieldEquals(AccruePositionInterestEntityType, '0x00000000#1', 'lendgine', AddressThree.toHexString())
+    assert.fieldEquals(AccruePositionInterestEntityType, '0x00000000#1', 'owner', AddressOne.toHexString())
+    assert.fieldEquals(AccruePositionInterestEntityType, '0x00000000#1', 'rewardPerPosition', '1000000000000000000')
+
+    assert.fieldEquals(AccruePositionInterestEntityType, '0x00000000#1', 'logIndex', '1')
+
+    assert.fieldEquals(FactoryEntityType, FACTORY_ADDRESS, 'id', FACTORY_ADDRESS)
+    assert.fieldEquals(FactoryEntityType, FACTORY_ADDRESS, 'lendgineCount', '1')
+    assert.fieldEquals(FactoryEntityType, FACTORY_ADDRESS, 'txCount', '2')
+
+    assert.fieldEquals(TokenEntityType, AddressOne.toHexString(), 'poolCount', '1')
+    assert.fieldEquals(TokenEntityType, AddressOne.toHexString(), 'txCount', '2')
+    assert.fieldEquals(TokenEntityType, AddressTwo.toHexString(), 'poolCount', '1')
+    assert.fieldEquals(TokenEntityType, AddressTwo.toHexString(), 'txCount', '2')
+
+    assert.entityCount(FactoryEntityType, 1)
+    assert.entityCount(LendgineEntityType, 1)
+    assert.entityCount(TokenEntityType, 2)
+    assert.entityCount(AccruePositionInterestEntityType, 1)
+  })
+
+  test('Save Collect from event', () => {
+    const collectEvent = createCollectEvent(AddressOne, AddressTwo, BigInt.fromString('1000000000000000000'))
+
+    collectEvent.address = AddressThree
+    collectEvent.transaction.hash = Bytes.empty()
+    collectEvent.logIndex = BigInt.fromString('1')
+
+    handleCollect(collectEvent)
+
+    assert.fieldEquals(CollectEntityType, '0x00000000#1', 'id', '0x00000000#1')
+    assert.fieldEquals(CollectEntityType, '0x00000000#1', 'lendgine', AddressThree.toHexString())
+    assert.fieldEquals(CollectEntityType, '0x00000000#1', 'owner', AddressOne.toHexString())
+    assert.fieldEquals(CollectEntityType, '0x00000000#1', 'recipient', AddressTwo.toHexString())
+    assert.fieldEquals(CollectEntityType, '0x00000000#1', 'amount', '1000000000000000000')
+
+    assert.fieldEquals(CollectEntityType, '0x00000000#1', 'logIndex', '1')
+
+    assert.fieldEquals(FactoryEntityType, FACTORY_ADDRESS, 'id', FACTORY_ADDRESS)
+    assert.fieldEquals(FactoryEntityType, FACTORY_ADDRESS, 'lendgineCount', '1')
+    assert.fieldEquals(FactoryEntityType, FACTORY_ADDRESS, 'txCount', '2')
+
+    assert.fieldEquals(TokenEntityType, AddressOne.toHexString(), 'poolCount', '1')
+    assert.fieldEquals(TokenEntityType, AddressOne.toHexString(), 'txCount', '2')
+    assert.fieldEquals(TokenEntityType, AddressTwo.toHexString(), 'poolCount', '1')
+    assert.fieldEquals(TokenEntityType, AddressTwo.toHexString(), 'txCount', '2')
+
+    assert.entityCount(FactoryEntityType, 1)
+    assert.entityCount(LendgineEntityType, 1)
+    assert.entityCount(TokenEntityType, 2)
+    assert.entityCount(CollectEntityType, 1)
   })
 })
