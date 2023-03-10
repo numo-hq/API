@@ -100,7 +100,6 @@ type Mint @entity {
   sender: Bytes!
   recipient: Bytes!
 
-  # TODO: should these be something different
   collateral: BigInt!
   liquidity: BigInt!
   shares: BigInt!
@@ -122,7 +121,6 @@ type Burn @entity {
   sender: Bytes!
   recipient: Bytes!
 
-  # TODO: should these be something different
   collateral: BigInt!
   liquidity: BigInt!
   shares: BigInt!
@@ -144,7 +142,6 @@ type Deposit @entity {
   sender: Bytes!
   recipient: Bytes!
 
-  # TODO: should these be something different
   liquidity: BigInt!
   size: BigInt!
 
@@ -165,7 +162,6 @@ type Withdraw @entity {
   sender: Bytes!
   recipient: Bytes!
 
-  # TODO: should these be something different
   liquidity: BigInt!
   size: BigInt!
 
@@ -183,7 +179,6 @@ type AccrueInterest @entity {
   # The lendgine the position is in
   lendgine: Lendgine!
 
-  # TODO: should these be something different
   timeElapsed: BigInt!
   collateral: BigInt!
   liquidity: BigInt!
@@ -204,7 +199,6 @@ type AccruePositionInterest @entity {
 
   owner: Bytes!
 
-  # TODO: should these be something different
   rewardPerPosition: BigInt!
 
   # order within the txn
@@ -224,7 +218,6 @@ type Collect @entity {
   owner: Bytes!
   recipient: Bytes!
 
-  # TODO: should these be something different
   amount: BigInt!
 
   # order within the txn
@@ -241,7 +234,6 @@ type PairMint @entity {
   # The lendgine the position is in
   lendgine: Lendgine!
 
-  # TODO: should these be something different
   amount0: BigInt!
   amount1: BigInt!
   liquidity: BigInt!
@@ -260,7 +252,6 @@ type PairBurn @entity {
   # The lendgine the position is in
   lendgine: Lendgine!
 
-  # TODO: should these be something different
   recipient: Bytes!
   amount0: BigInt!
   amount1: BigInt!
@@ -280,7 +271,6 @@ type Swap @entity {
   # The lendgine the position is in
   lendgine: Lendgine!
 
-  # TODO: should these be something different
   recipient: Bytes!
   amount0In: BigInt!
   amount1In: BigInt!
