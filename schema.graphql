@@ -57,8 +57,8 @@ type Lendgine @entity {
   # immutables
   token0: Token!
   token1: Token!
-  token0Exp: Int! #TODO: should this be int or bigint
-  token1Exp: Int!
+  token0Exp: BigInt!
+  token1Exp: BigInt!
   upperBound: BigInt!
 
   # storage data

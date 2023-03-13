@@ -34,8 +34,10 @@ export const AddressFour = Address.fromString('0x0000000000000000000000000000000
 export function createLendgineCreatedEvent(
   token0: Address,
   token1: Address,
-  token0Exp: i32,
-  token1Exp: i32,
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  token0Exp: BigInt,
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  token1Exp: BigInt,
   // eslint-disable-next-line @typescript-eslint/ban-types
   upperBound: BigInt,
   lendgine: Address
@@ -45,8 +47,8 @@ export function createLendgineCreatedEvent(
 
   const token0Param = new ethereum.EventParam('token0', ethereum.Value.fromAddress(token0))
   const token1Param = new ethereum.EventParam('token1', ethereum.Value.fromAddress(token1))
-  const token0ExpParam = new ethereum.EventParam('token0Exp', ethereum.Value.fromI32(token0Exp))
-  const token1ExpParam = new ethereum.EventParam('token1Exp', ethereum.Value.fromI32(token1Exp))
+  const token0ExpParam = new ethereum.EventParam('token0Exp', ethereum.Value.fromUnsignedBigInt(token0Exp))
+  const token1ExpParam = new ethereum.EventParam('token1Exp', ethereum.Value.fromUnsignedBigInt(token1Exp))
   const upperBoundParam = new ethereum.EventParam('upperBound', ethereum.Value.fromUnsignedBigInt(upperBound))
   const lendgineParam = new ethereum.EventParam('lendgine', ethereum.Value.fromAddress(lendgine))
 

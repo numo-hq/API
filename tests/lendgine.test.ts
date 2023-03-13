@@ -50,8 +50,8 @@ describe('Lendgines', () => {
     const lendgineCreatedEvent = createLendgineCreatedEvent(
       AddressOne,
       AddressTwo,
-      18,
-      18,
+      BigInt.fromI32(18),
+      BigInt.fromI32(18),
       BigInt.fromString('1000000000000000000'),
       AddressThree
     )

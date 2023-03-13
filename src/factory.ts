@@ -30,8 +30,8 @@ export function handleLendgineCreated(event: LendgineCreatedEvent): void {
 
   lendgine.token0 = event.params.token0.toHexString()
   lendgine.token1 = event.params.token1.toHexString()
-  lendgine.token0Exp = event.params.token0Exp.toU32()
-  lendgine.token1Exp = event.params.token1Exp.toU32()
+  lendgine.token0Exp = event.params.token0Exp
+  lendgine.token1Exp = event.params.token1Exp
   lendgine.upperBound = event.params.upperBound
 
   lendgine.totalPositionSize = ZERO_BI
