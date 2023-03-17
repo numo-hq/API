@@ -5,7 +5,7 @@
     "codegen": "graph codegen --output-dir src/types/",
     "build": "graph build",
     "clean": "rm -rf build/ generated/",
-    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ kyscott18/numoen-arbitrum",
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ kyscott18/numoen-celo",
     "create-local": "graph create --node http://localhost:8020/ kyscott/numoen",
     "remove-local": "graph remove --node http://localhost:8020/ kyscott/numoen",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 kyscott/numoen",
@@ -19,10 +19,10 @@
     "@graphprotocol/graph-ts": "0.29.3"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.52.0",
-    "@typescript-eslint/parser": "^5.52.0",
-    "eslint": "^8.34.0",
-    "eslint-config-prettier": "^8.6.0",
+    "@typescript-eslint/eslint-plugin": "^5.55.0",
+    "@typescript-eslint/parser": "^5.55.0",
+    "eslint": "^8.36.0",
+    "eslint-config-prettier": "^8.7.0",
     "matchstick-as": "0.5.1",
     "prettier": "^2.8.4",
     "typescript": "^4.9.5"
