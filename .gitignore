@@ -2,8 +2,6 @@ node_modules
 build
 src/types
 
-.eslintcache
-
 # Matchstick binaries
 tests/.*
 matchstick
